@@ -4,36 +4,39 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+/**
+ * TODOs:
+ *  - Turn off auto-commit and start a transaction.
+ *  - Withdraw 'amount' from 'fromId' using a PreparedStatement.
+ *  - (If triggerError == true) throw an exception AFTER the withdraw and BEFORE the deposit.
+ *  - Deposit 'amount' into 'toId' using a PreparedStatement.
+ *  - Commit on success; rollback on any exception.
+ *  - Print simple logs for: start, each SQL, commit, rollback.
+ */
 public class TransactionService {
 
+    /**
+     * @param fromId source account id
+     * @param toId destination account id
+     * @param amount amount to transfer
+     * @param triggerError if true, simulate a failure mid-transaction to test rollback
+     */
     public void transferFunds(int fromId, int toId, double amount, boolean triggerError) throws SQLException {
+        // TODO: implement using a single DB transaction and PreparedStatement only.
         try (Connection conn = DatabaseConfig.getConnection()) {
-            conn.setAutoCommit(false);
+            // TODO: conn.setAutoCommit(false);
 
-            try (PreparedStatement withdraw = conn.prepareStatement(
-                    "UPDATE accounts SET balance = balance - ? WHERE id = ?");
-                 PreparedStatement deposit = conn.prepareStatement(
-                    "UPDATE accounts SET balance = balance + ? WHERE id = ?")) {
+            // TODO: try-with-resources for two PreparedStatements:
+            //  UPDATE accounts SET balance = balance - ? WHERE id = ?
+            //  UPDATE accounts SET balance = balance + ? WHERE id = ?
 
-                withdraw.setDouble(1, amount);
-                withdraw.setInt(2, fromId);
-                withdraw.executeUpdate();
+            // TODO: set parameters and executeUpdate for both statements
 
-                if (triggerError) {
-                    throw new RuntimeException("Simulated failure!");
-                }
+            // TODO: if (triggerError) throw new RuntimeException("Simulated failure!");
 
-                deposit.setDouble(1, amount);
-                deposit.setInt(2, toId);
-                deposit.executeUpdate();
+            // TODO: commit on success
 
-                conn.commit();
-                System.out.println("Transaction committed successfully.");
-            } catch (Exception e) {
-                conn.rollback();
-                System.out.println("Transaction rolled back: " + e.getMessage());
-                throw e;
-            }
+            // TODO: on any exception -> rollback and rethrow
         }
     }
 }
