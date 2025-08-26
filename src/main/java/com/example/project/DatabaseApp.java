@@ -3,9 +3,13 @@ package com.example.project;
 public class DatabaseApp {
     public static void main(String[] args) {
         DatabaseConfig.initialiseDatabase();
+        TransactionService service = new TransactionService();
 
-        // You can run manual experiments here:
-        // new TransactionService().transferFunds(1, 2, 100, false);
-        // new TransactionService().transferFunds(1, 2, 50, true);
+        try {
+            service.transferFunds(1, 2, 100, false);
+            service.transferFunds(1, 2, 50, true); // This will rollback
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 }

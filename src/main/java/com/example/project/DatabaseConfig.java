@@ -8,19 +8,17 @@ import java.sql.Statement;
 public class DatabaseConfig {
 
     public static Connection getConnection() throws SQLException {
-        // In-memory H2; keeps data for the life of the JVM
         return DriverManager.getConnection("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1");
     }
 
     public static void initialiseDatabase() {
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
-            stmt.execute("DROP TABLE IF EXISTS accounts");
             stmt.execute("CREATE TABLE accounts (id INT PRIMARY KEY, name VARCHAR(50), balance DECIMAL)");
             stmt.execute("INSERT INTO accounts VALUES (1, 'Alice', 1000)");
             stmt.execute("INSERT INTO accounts VALUES (2, 'Bob', 1000)");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 }
